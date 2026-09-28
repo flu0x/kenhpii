@@ -144,7 +144,6 @@
             <button onclick="turnToPage('about')" class="nav-link text-gray-600 hover:text-brandRed transition-all duration-300" data-target="about">About</button>
             <button onclick="turnToPage('resume')" class="nav-link text-gray-600 hover:text-brandRed transition-all duration-300" data-target="resume">Resume</button>
             <button onclick="turnToPage('skills')" class="nav-link text-gray-600 hover:text-brandRed transition-all duration-300" data-target="skills">Skills</button> <!-- TAMBAHAN -->
-            <button onclick="turnToPage('portfolio')" class="nav-link text-gray-600 hover:text-brandRed transition-all duration-300" data-target="portfolio">Portfolio</button>
             <button onclick="turnToPage('contact')" class="nav-link text-gray-600 hover:text-brandRed transition-all duration-300" data-target="contact">Contact</button>
         </nav>
 
@@ -162,7 +161,6 @@
         <button onclick="turnToPage('about'); toggleMobileMenu();" class="text-gray-700">About</button>
         <button onclick="turnToPage('resume'); toggleMobileMenu();" class="text-gray-700">Resume</button>
         <button onclick="turnToPage('skills'); toggleMobileMenu();" class="text-gray-700">Skills</button>
-        <button onclick="turnToPage('portfolio'); toggleMobileMenu();" class="text-gray-700">Portfolio</button>
         <button onclick="turnToPage('contact'); toggleMobileMenu();" class="text-gray-700">Contact</button>
         <button onclick="toggleMobileMenu()" class="absolute top-6 right-6 text-2xl text-gray-700 p-2"><i class="fa-solid fa-xmark"></i></button>
     </div>
@@ -188,9 +186,6 @@
                     <div class="flex flex-wrap items-center justify-center gap-4">
                         <button onclick="turnToPage('contact')" class="bg-brandRed hover:bg-brandRedHover text-white text-sm font-semibold uppercase px-6 py-3 rounded shadow-lg transition-transform hover:-translate-y-0.5">
                             <span id="btn-contact">Contact Me</span>
-                        </button>
-                        <button onclick="turnToPage('portfolio')" class="bg-brandRed hover:bg-brandRedHover text-white text-sm font-semibold uppercase px-6 py-3 rounded shadow-lg transition-transform hover:-translate-y-0.5">
-                            <span id="btn-portfolio">Portfolio</span>
                         </button>
                         <button onclick="downloadCV()" class="bg-brandRed hover:bg-brandRedHover text-white text-sm font-semibold uppercase px-6 py-3 rounded shadow-lg transition-transform hover:-translate-y-0.5">
                             <span id="btn-cv">CV</span>
@@ -373,90 +368,6 @@
                     </div>
                 </div>
             </section>
-            <!-- PORTFOLIO PAGE -->
-            <section id="page-portfolio" class="book-page waiting-right justify-center">
-                <div class="max-w-5xl mx-auto w-full">
-                    <div class="mb-6 text-center w-full">
-                        <h2 class="text-3xl md:text-4xl font-bold tracking-tight uppercase mb-1">My <span class="text-brandRed">Portfolio</span></h2>
-                        <p class="text-gray-500 text-xs sm:text-sm">Explore my creative works and projects</p>
-                        <div class="w-12 h-1 bg-brandRed mx-auto mt-2 rounded"></div>
-                    </div>
-                    
-                    <!-- 3x3 Grid with 9th More Images Card -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full">
-                        <!-- Project 1 -->
-                        <div class="group relative overflow-hidden rounded-lg shadow-sm bg-white cursor-pointer h-40 md:h-44">
-                            <img src="https://placehold.co/600x400/e5e7eb/333333?text=Project+1" alt="Project 1" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                            <div class="absolute inset-0 bg-brandRed/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white p-3 text-center">
-                                <h4 class="text-sm font-bold mb-1">Minimalist Brand</h4>
-                                <p class="text-[10px] uppercase tracking-wider">Branding</p>
-                            </div>
-                        </div>
-                        <!-- Project 2 -->
-                        <div class="group relative overflow-hidden rounded-lg shadow-sm bg-white cursor-pointer h-40 md:h-44">
-                            <img src="https://placehold.co/600x400/e5e7eb/333333?text=Project+2" alt="Project 2" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                            <div class="absolute inset-0 bg-brandRed/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white p-3 text-center">
-                                <h4 class="text-sm font-bold mb-1">E-Commerce App</h4>
-                                <p class="text-[10px] uppercase tracking-wider">UI/UX Design</p>
-                            </div>
-                        </div>
-                        <!-- Project 3 -->
-                        <div class="group relative overflow-hidden rounded-lg shadow-sm bg-white cursor-pointer h-40 md:h-44">
-                            <img src="https://placehold.co/600x400/e5e7eb/333333?text=Project+3" alt="Project 3" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                            <div class="absolute inset-0 bg-brandRed/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white p-3 text-center">
-                                <h4 class="text-sm font-bold mb-1">Architecture Portfolio</h4>
-                                <p class="text-[10px] uppercase tracking-wider">Web Design</p>
-                            </div>
-                        </div>
-                        <!-- Project 4 -->
-                        <div class="group relative overflow-hidden rounded-lg shadow-sm bg-white cursor-pointer h-40 md:h-44">
-                            <img src="https://placehold.co/600x400/e5e7eb/333333?text=Project+4" alt="Project 4" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                            <div class="absolute inset-0 bg-brandRed/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white p-3 text-center">
-                                <h4 class="text-sm font-bold mb-1">Typographic Poster</h4>
-                                <p class="text-[10px] uppercase tracking-wider">Graphic Design</p>
-                            </div>
-                        </div>
-                        <!-- Project 5 -->
-                        <div class="group relative overflow-hidden rounded-lg shadow-sm bg-white cursor-pointer h-40 md:h-44">
-                            <img src="https://placehold.co/600x400/e5e7eb/333333?text=Project+5" alt="Project 5" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                            <div class="absolute inset-0 bg-brandRed/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white p-3 text-center">
-                                <h4 class="text-sm font-bold mb-1">SaaS Dashboard</h4>
-                                <p class="text-[10px] uppercase tracking-wider">UI/UX Design</p>
-                            </div>
-                        </div>
-                        <!-- Project 6 -->
-                        <div class="group relative overflow-hidden rounded-lg shadow-sm bg-white cursor-pointer h-40 md:h-44">
-                            <img src="https://placehold.co/600x400/e5e7eb/333333?text=Project+6" alt="Project 6" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                            <div class="absolute inset-0 bg-brandRed/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white p-3 text-center">
-                                <h4 class="text-sm font-bold mb-1">Editorial Magazine</h4>
-                                <p class="text-[10px] uppercase tracking-wider">Print & Layout</p>
-                            </div>
-                        </div>
-                        <!-- Project 7 -->
-                        <div class="group relative overflow-hidden rounded-lg shadow-sm bg-white cursor-pointer h-40 md:h-44">
-                            <img src="https://placehold.co/600x400/e5e7eb/333333?text=Project+7" alt="Project 7" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                            <div class="absolute inset-0 bg-brandRed/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white p-3 text-center">
-                                <h4 class="text-sm font-bold mb-1">Coffee Packaging</h4>
-                                <p class="text-[10px] uppercase tracking-wider">Packaging</p>
-                            </div>
-                        </div>
-                        <!-- Project 8 -->
-                        <div class="group relative overflow-hidden rounded-lg shadow-sm bg-white cursor-pointer h-40 md:h-44">
-                            <img src="https://placehold.co/600x400/e5e7eb/333333?text=Project+8" alt="Project 8" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                            <div class="absolute inset-0 bg-brandRed/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white p-3 text-center">
-                                <h4 class="text-sm font-bold mb-1">NFT Art Collection</h4>
-                                <p class="text-[10px] uppercase tracking-wider">Digital Art</p>
-                            </div>
-                        </div>
-                        <!-- Project 9 - More Images Card -->
-                        <div onclick="openMoreImagesModal()" class="group relative overflow-hidden rounded-lg shadow-sm bg-gray-900 border-2 border-brandRed cursor-pointer h-40 md:h-44 flex flex-col items-center justify-center text-white text-center p-4 hover:bg-brandRed transition-colors duration-300">
-                            <i class="fa-solid fa-images text-2xl mb-2 text-brandRed group-hover:text-white transition-colors"></i>
-                            <h4 class="text-sm font-bold uppercase tracking-wider mb-1">More Images</h4>
-                            <p class="text-[10px] text-gray-400 group-hover:text-white/90">View archived gallery</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
 
             <!-- CONTACT PAGE -->
             <section id="page-contact" class="book-page waiting-right justify-center">
@@ -546,7 +457,7 @@
 
     <!-- Interactive Script for 3D Book Turning Animation -->
     <script>
-        const pagesOrder = ['home', 'about', 'resume', 'skills', 'portfolio', 'contact'];
+        const pagesOrder = ['home', 'about', 'resume', 'skills', 'contact'];
         let currentPageIndex = 0;
 
         function turnToPage(targetId) {
