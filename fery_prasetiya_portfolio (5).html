@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Niken Indah P — Freelance Designer</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandRed: '#ff3333',
+                        brandRedHover: '#e62e2e',
+                        darkText: '#1a1a1a',
+                        lightBg: '#f8f9fa'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f3f5;
+            color: #1a1a1a;
+            overflow-x: hidden;
+            perspective: 2000px;
+        }
+
+        /* Workspace background for home section */
+        .workspace-bg {
+            background-image: linear-gradient(rgba(241, 243, 245, 0.92), rgba(241, 243, 245, 0.92)), url('https://placehold.co/1920x1080/e5e7eb/d1d5db?text=Workspace+Desk+Setup');
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* 3D Book Container wrapper */
+        .book-viewport {
+            perspective: 2500px;
+            transform-style: preserve-3d;
+            width: 100%;
+            max-width: 1200px;
+            min-height: 75vh;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* Section pages styled as book sheets */
+        .book-page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
+            transform-origin: left center;
+            transform-style: preserve-3d;
+            backface-visibility: hidden;
+            transition: transform 1.1s cubic-bezier(0.645, 0.045, 0.355, 1), opacity 0.8s ease;
+            opacity: 0;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow-y: auto;
+            padding: 3rem 2rem;
+            z-index: 1;
+        }
+
+        /* Active page styling */
+        .book-page.active {
+            transform: rotateY(0deg) translateZ(0px);
+            opacity: 1;
+            pointer-events: auto;
+            z-index: 10;
+            box-shadow: -15px 20px 50px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Pages turning left (already visited) */
+        .book-page.turned-left {
+            transform: rotateY(-110deg) translateZ(-100px);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Pages waiting on the right */
+        .book-page.waiting-right {
+            transform: rotateY(110deg) translateZ(-100px);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Book spine / shadow effect on left edge */
+        .book-page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 20px;
+            height: 100%;
+            background: linear-gradient(to right, rgba(0,0,0,0.06), transparent);
+            border-top-left-radius: 16px;
+            border-bottom-left-radius: 16px;
+            pointer-events: none;
+        }
+
+        /* Scrollbar styling for inner pages */
+        .book-page::-webkit-scrollbar {
+            width: 6px;
+        }
+        .book-page::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .book-page::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-brandRed selection:text-white">
+
+    <header class="w-full px-6 md:px-16 py-6 flex items-center justify-between z-50 absolute top-0 left-0 bg-transparent">
+        <!-- Language Switcher -->
+        <div class="flex items-center space-x-2 text-sm font-semibold tracking-wider">
+            <button onclick="setLanguage('eng')" id="lang-eng" class="text-brandRed border-b-2 border-brandRed pb-0.5 transition-colors">ENG</button>
+            <span class="text-gray-400">|</span>
+            <button onclick="setLanguage('ina')" id="lang-ina" class="text-gray-500 hover:text-brandRed pb-0.5 transition-colors">INA</button>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav class="hidden md:flex items-center space-x-8 text-sm font-medium uppercase tracking-widest">
+            <button onclick="turnToPage('home')" class="nav-link text-brandRed font-semibold transition-all duration-300" data-target="home">Home</button>
+            <button onclick="turnToPage('about')" class="nav-link text-gray-600 hover:text-brandRed transition-all duration-300" data-target="about">About</button>
+            <button onclick="turnToPage('resume')" class="nav-link text-gray-600 hover:text-brandRed transition-all duration-300" data-target="resume">Resume</button>
+            <button onclick="turnToPage('skills')" class="nav-link text-gray-600 hover:text-brandRed transition-all duration-300" data-target="skills">Skills</button> <!-- TAMBAHAN -->
+            <button onclick="turnToPage('portfolio')" class="nav-link text-gray-600 hover:text-brandRed transition-all duration-300" data-target="portfolio">Portfolio</button>
+            <button onclick="turnToPage('contact')" class="nav-link text-gray-600 hover:text-brandRed transition-all duration-300" data-target="contact">Contact</button>
+        </nav>
+
+        <!-- Mobile Menu Button -->
+        <div class="md:hidden">
+            <button onclick="toggleMobileMenu()" class="text-gray-800 focus:outline-none p-2">
+                <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Dropdown Menu -->
+    <div id="mobile-menu" class="hidden fixed inset-0 z-40 bg-white/95 backdrop-blur-md flex flex-col items-center justify-center space-y-6 text-lg font-semibold uppercase tracking-widest transition-all">
+        <button onclick="turnToPage('home'); toggleMobileMenu();" class="text-brandRed">Home</button>
+        <button onclick="turnToPage('about'); toggleMobileMenu();" class="text-gray-700">About</button>
+        <button onclick="turnToPage('resume'); toggleMobileMenu();" class="text-gray-700">Resume</button>
+        <button onclick="turnToPage('skills'); toggleMobileMenu();" class="text-gray-700">Skills</button>
+        <button onclick="turnToPage('portfolio'); toggleMobileMenu();" class="text-gray-700">Portfolio</button>
+        <button onclick="turnToPage('contact'); toggleMobileMenu();" class="text-gray-700">Contact</button>
+        <button onclick="toggleMobileMenu()" class="absolute top-6 right-6 text-2xl text-gray-700 p-2"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <main class="flex-grow flex items-center justify-center relative w-full px-4 sm:px-8 py-24 md:py-28">
+        
+        <div class="book-viewport">
+
+            <!-- HOME PAGE -->
+            <section id="page-home" class="book-page active workspace-bg justify-between">
+                <div class="max-w-3xl mx-auto my-auto text-center flex flex-col items-center justify-center w-full">
+                    <p class="text-sm font-semibold tracking-widest uppercase text-gray-500 mb-2 flex items-center gap-2">
+                        <span class="inline-block w-6 h-[2px] bg-gray-500"></span> 
+                        <span id="txt-hello">HELLO</span>
+                        <span class="inline-block w-6 h-[2px] bg-gray-500"></span>
+                    </p>
+                    <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-gray-900 mb-4">
+                        I’m <span class="text-brandRed">Niken</span> Indah P
+                    </h1>
+                    <p id="txt-subtitle" class="text-lg md:text-2xl text-gray-600 font-light mb-8">
+                        Administrative & Data Entry Specialist
+                    </p>
+                    <div class="flex flex-wrap items-center justify-center gap-4">
+                        <button onclick="turnToPage('contact')" class="bg-brandRed hover:bg-brandRedHover text-white text-sm font-semibold uppercase px-6 py-3 rounded shadow-lg transition-transform hover:-translate-y-0.5">
+                            <span id="btn-contact">Contact Me</span>
+                        </button>
+                        <button onclick="turnToPage('portfolio')" class="bg-brandRed hover:bg-brandRedHover text-white text-sm font-semibold uppercase px-6 py-3 rounded shadow-lg transition-transform hover:-translate-y-0.5">
+                            <span id="btn-portfolio">Portfolio</span>
+                        </button>
+                        <button onclick="downloadCV()" class="bg-brandRed hover:bg-brandRedHover text-white text-sm font-semibold uppercase px-6 py-3 rounded shadow-lg transition-transform hover:-translate-y-0.5">
+                            <span id="btn-cv">CV</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Social Links Centered -->
+                <div class="w-full flex items-center justify-center space-x-6 text-gray-600 text-lg mt-4">
+                    <a href="https://www.instagram.com/kenhpii/" target="_blank" rel="noopener noreferrer" class="hover:text-brandRed transition-colors">
+        <i class="fa-brands fa-instagram"></i>
+    </a>
+                    <a href="https://www.linkedin.com/in/niken-indah-pratiwi-b9a824375/" target="_blank" rel="noopener noreferrer" class="hover:text-brandRed transition-colors">
+        <i class="fa-brands fa-linkedin"></i>
+    </a>
+                    <a href="https://www.tiktok.com/@nasibakar" target="_blank" rel="noopener noreferrer" class="hover:text-brandRed transition-colors">
+        <i class="fa-brands fa-tiktok"></i>
+    </a>
+                    <a href="https://wa.me/6283117484243/" target="_blank" rel="noopener noreferrer" class="hover:text-brandRed transition-colors">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+                </div>
+            </section>
+
+            <!-- ABOUT PAGE -->
+            <section id="page-about" class="book-page waiting-right justify-center">
+                <div class="max-w-4xl mx-auto w-full">
+                    <div class="mb-8 text-center w-full">
+                        <h2 class="text-3xl md:text-4xl font-bold tracking-tight uppercase mb-2">About <span class="text-brandRed">Me</span></h2>
+                        <div class="w-12 h-1 bg-brandRed mx-auto rounded"></div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center w-full bg-lightBg p-6 sm:p-8 rounded-2xl border border-gray-100">
+                        <div class="relative flex justify-center">
+                            <div class="absolute -inset-2 bg-brandRed/10 rounded-lg blur-sm"></div>
+                            <img src="https://placehold.co/600x600/e5e7eb/333333?text=Niken+Indah" alt="Fery Prasetiya" class="relative rounded-lg shadow-md w-full max-w-xs md:max-w-none object-cover h-[300px] md:h-[340px]">
+                        </div>
+                        <div class="text-center md:text-left flex flex-col items-center md:items-start">
+                            <h3 class="text-xl md:text-2xl font-semibold mb-3 text-gray-800"></h3>
+                            <p class="text-gray-600 leading-relaxed mb-6 text-sm md:text-base text-justify">
+                               A fast-learning and adaptable graduate with a strong foundation in administration, data accuracy, and digital tools including Canva and Microsoft Office. Combining meticulous attention to detail honed through an accounting background with creative capabilities. Ready to contribute effectively as a Staff Design Prepress, ensuring precision, quality, and seamless preparation in every project.</p>
+                            <div class="grid grid-cols-2 gap-4 mb-6 text-left w-full">
+                                <div>
+                                    <p class="text-xs text-gray-400 uppercase font-medium">Name:</p>
+                                    <p class="font-semibold text-gray-800 text-sm">Niken Indah P</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-400 uppercase font-medium">Email:</p>
+                                    <p class="font-semibold text-gray-800 text-sm">nikenindah9718@gmail.com</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-400 uppercase font-medium">From:</p>
+                                    <p class="font-semibold text-gray-800 text-sm">Serang, Indonesia</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-400 uppercase font-medium">Status:</p>
+                                    <p class="font-semibold text-brandRed text-sm">Available</p>
+                                </div>
+                            </div>
+                            <button onclick="turnToPage('contact')" class="bg-brandRed text-white px-6 py-2.5 rounded font-semibold uppercase text-xs tracking-wider hover:bg-brandRedHover shadow transition">
+                                Let's Talk
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- RESUME PAGE -->
+            <section id="page-resume" class="book-page waiting-right justify-center">
+                <div class="max-w-4xl mx-auto w-full">
+                    <div class="mb-8 text-center w-full">
+                        <h2 class="text-3xl md:text-4xl font-bold tracking-tight uppercase mb-2">My <span class="text-brandRed">Resume</span></h2>
+                        <div class="w-12 h-1 bg-brandRed mx-auto rounded"></div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 w-full bg-lightBg p-6 sm:p-8 rounded-2xl border border-gray-100">
+                        <div>
+                            <h3 class="text-lg font-bold mb-6 flex items-center justify-center md:justify-start gap-3 text-gray-800">
+                                <i class="fa-solid fa-briefcase text-brandRed"></i> Experience
+                            </h3>
+                            <div class="space-y-6 border-l-2 border-gray-300 pl-6 ml-2">
+                                <div class="relative">
+                                    <span class="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full bg-gray-400 border-4 border-white"></span>
+                                    <span class="text-xs font-semibold text-gray-600 bg-gray-200 px-2 py-1 rounded">September 2025 - November 2025</span>
+                                    <h4 class="text-base font-bold text-gray-800 mt-2">Sentul Abadi Motor</h4>
+                                    <p class="text-xs text-gray-500 mb-1">Cashier & Workshop Administration</p>
+                                    <p class="text-xs text-gray-600 text-justify">Operated specialized computer systems to record sales, purchases, and customer service data accurately, while generating daily recap reports to support smooth administrative tracking.</p>
+                                </div>
+                                <div class="relative">
+                                    <span class="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full bg-gray-400 border-4 border-white"></span>
+                                    <span class="text-xs font-semibold text-gray-600 bg-gray-200 px-2 py-1 rounded">Desember 2024 - Maret 2025</span>
+                                    <h4 class="text-base font-bold text-gray-800 mt-2">Agen JNE UPK Kragilan</h4>
+                                    <p class="text-xs text-gray-500 mb-1">Front Desk / Customer Service</p>
+                                    <p class="text-xs text-gray-600 text-justify">Calculated shipping costs accurately, provided clear expedition service information to customers, and recorded receipt data into the computer system with high precision.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold mb-6 flex items-center justify-center md:justify-start gap-3 text-gray-800">
+                                <i class="fa-solid fa-graduation-cap text-brandRed"></i> Education
+                            </h3>
+                            <div class="space-y-6 border-l-2 border-gray-300 pl-6 ml-2">
+                                <div class="relative">
+                                    <span class="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full bg-gray-400 border-4 border-white"></span>
+                                    <span class="text-xs font-semibold text-gray-600 bg-gray-200 px-2 py-1 rounded">2023 – 2026</span>
+                                    <h4 class="text-base font-bold text-gray-800 mt-2">SMKN 1 Kragilan
+                                    </h4>
+                                    <p class="text-xs text-gray-500 mb-1">Accounting and Institutional Finance</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+<!-- SKILLS PAGE -->
+            <section id="page-skills" class="book-page waiting-right justify-center">
+                <div class="max-w-4xl mx-auto w-full">
+                    <div class="mb-8 text-center w-full">
+                        <h2 class="text-3xl md:text-4xl font-bold tracking-tight uppercase mb-2">My <span class="text-brandRed">Skills</span></h2>
+                        <div class="w-12 h-1 bg-brandRed mx-auto rounded"></div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center w-full bg-lightBg p-6 sm:p-8 rounded-2xl border border-gray-100">
+                                   <!-- Desain & Kreatif -->
+            <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
+                <h3 class="font-bold text-slate-800 text-sm mb-3 flex items-center">
+                    <i class="fa-solid fa-palette text-primary mr-2"></i> Design & Creative
+                </h3>
+                <div class="space-y-3 text-xs text-slate-600">
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <span class="font-semibold text-slate-700">Data Entry & System Input</span>
+                            <span class="text-primary font-bold">95%</span>
+                        </div>
+                        <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                            <div class="bg-primary h-full rounded-full" style="width: 95%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <span class="font-semibold text-slate-700">Daily Financial & Transaction Reporting</span>
+                            <span class="text-primary font-bold">90%</span>
+                        </div>
+                        <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                            <div class="bg-primary h-full rounded-full" style="width: 90%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <span class="font-semibold text-slate-700">Office & Administrative Support</span>
+                            <span class="text-primary font-bold">90%</span>
+                        </div>
+                        <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                            <div class="bg-primary h-full rounded-full" style="width: 85%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tools & Operasional -->
+            <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
+                <h3 class="font-bold text-slate-800 text-sm mb-3 flex items-center">
+                    <i class="fa-solid fa-toolbox text-primary mr-2"></i> Tools & Operations
+                </h3>
+                <div class="flex flex-wrap gap-2 pt-1">
+                    <span class="bg-white border border-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold shadow-xs flex items-center">
+                        <i class="fa-brands fa-figma text-orange-500 mr-1.5"></i> Microsoft Office
+                    </span>
+                    <span class="bg-white border border-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold shadow-xs flex items-center">
+                        <i class="fa-solid fa-pen-nib text-blue-600 mr-1.5"></i> Canva
+                    </span>
+                    <span class="bg-white border border-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold shadow-xs flex items-center">
+                        <i class="fa-solid fa-calculator text-emerald-600 mr-1.5"></i> Basic Accounting Software
+                    </span>
+                    <span class="bg-white border border-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold shadow-xs flex items-center">
+                        <i class="fa-solid fa-comments text-green-600 mr-1.5"></i> Customer Service & Communication
+                    </span>
+                    <span class="bg-white border border-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold shadow-xs flex items-center">
+                        <i class="fa-solid fa-boxes-stacked text-purple-600 mr-1.5"></i> Teamwork & Time Management
+                    </span>
+                </div>
+            </div>
+                    </div>
+                </div>
+            </section>
+            <!-- PORTFOLIO PAGE -->
+            <section id="page-portfolio" class="book-page waiting-right justify-center">
+                <div class="max-w-5xl mx-auto w-full">
+                    <div class="mb-6 text-center w-full">
+                        <h2 class="text-3xl md:text-4xl font-bold tracking-tight uppercase mb-1">My <span class="text-brandRed">Portfolio</span></h2>
+                        <p class="text-gray-500 text-xs sm:text-sm">Explore my creative works and projects</p>
+                        <div class="w-12 h-1 bg-brandRed mx-auto mt-2 rounded"></div>
+                    </div>
+                    
+                    <!-- 3x3 Grid with 9th More Images Card -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full">
+                        <!-- Project 1 -->
+                        <div class="group relative overflow-hidden rounded-lg shadow-sm bg-white cursor-pointer h-40 md:h-44">
+                            <img src="https://placehold.co/600x400/e5e7eb/333333?text=Project+1" alt="Project 1" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            <div class="absolute inset-0 bg-brandRed/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white p-3 text-center">
+                                <h4 class="text-sm font-bold mb-1">Minimalist Brand</h4>
+                                <p class="text-[10px] uppercase tracking-wider">Branding</p>
+                            </div>
+                        </div>
+                        <!-- Project 2 -->
+                        <div class="group relative overflow-hidden rounded-lg shadow-sm bg-white cursor-pointer h-40 md:h-44">
+                            <img src="https://placehold.co/600x400/e5e7eb/333333?text=Project+2" alt="Project 2" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            <div class="absolute inset-0 bg-brandRed/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white p-3 text-center">
+                                <h4 class="text-sm font-bold mb-1">E-Commerce App</h4>
+                                <p class="text-[10px] uppercase tracking-wider">UI/UX Design</p>
+                            </div>
+                        </div>
+                        <!-- Project 3 -->
+                        <div class="group relative overflow-hidden rounded-lg shadow-sm bg-white cursor-pointer h-40 md:h-44">
+                            <img src="https://placehold.co/600x400/e5e7eb/333333?text=Project+3" alt="Project 3" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            <div class="absolute inset-0 bg-brandRed/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white p-3 text-center">
+                                <h4 class="text-sm font-bold mb-1">Architecture Portfolio</h4>
+                                <p class="text-[10px] uppercase tracking-wider">Web Design</p>
+                            </div>
+                        </div>
+                        <!-- Project 4 -->
+                        <div class="group relative overflow-hidden rounded-lg shadow-sm bg-white cursor-pointer h-40 md:h-44">
+                            <img src="https://placehold.co/600x400/e5e7eb/333333?text=Project+4" alt="Project 4" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            <div class="absolute inset-0 bg-brandRed/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white p-3 text-center">
+                                <h4 class="text-sm font-bold mb-1">Typographic Poster</h4>
+                                <p class="text-[10px] uppercase tracking-wider">Graphic Design</p>
+                            </div>
+                        </div>
+                        <!-- Project 5 -->
+                        <div class="group relative overflow-hidden rounded-lg shadow-sm bg-white cursor-pointer h-40 md:h-44">
+                            <img src="https://placehold.co/600x400/e5e7eb/333333?text=Project+5" alt="Project 5" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            <div class="absolute inset-0 bg-brandRed/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white p-3 text-center">
+                                <h4 class="text-sm font-bold mb-1">SaaS Dashboard</h4>
+                                <p class="text-[10px] uppercase tracking-wider">UI/UX Design</p>
+                            </div>
+                        </div>
+                        <!-- Project 6 -->
+                        <div class="group relative overflow-hidden rounded-lg shadow-sm bg-white cursor-pointer h-40 md:h-44">
+                            <img src="https://placehold.co/600x400/e5e7eb/333333?text=Project+6" alt="Project 6" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            <div class="absolute inset-0 bg-brandRed/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white p-3 text-center">
+                                <h4 class="text-sm font-bold mb-1">Editorial Magazine</h4>
+                                <p class="text-[10px] uppercase tracking-wider">Print & Layout</p>
+                            </div>
+                        </div>
+                        <!-- Project 7 -->
+                        <div class="group relative overflow-hidden rounded-lg shadow-sm bg-white cursor-pointer h-40 md:h-44">
+                            <img src="https://placehold.co/600x400/e5e7eb/333333?text=Project+7" alt="Project 7" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            <div class="absolute inset-0 bg-brandRed/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white p-3 text-center">
+                                <h4 class="text-sm font-bold mb-1">Coffee Packaging</h4>
+                                <p class="text-[10px] uppercase tracking-wider">Packaging</p>
+                            </div>
+                        </div>
+                        <!-- Project 8 -->
+                        <div class="group relative overflow-hidden rounded-lg shadow-sm bg-white cursor-pointer h-40 md:h-44">
+                            <img src="https://placehold.co/600x400/e5e7eb/333333?text=Project+8" alt="Project 8" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            <div class="absolute inset-0 bg-brandRed/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white p-3 text-center">
+                                <h4 class="text-sm font-bold mb-1">NFT Art Collection</h4>
+                                <p class="text-[10px] uppercase tracking-wider">Digital Art</p>
+                            </div>
+                        </div>
+                        <!-- Project 9 - More Images Card -->
+                        <div onclick="openMoreImagesModal()" class="group relative overflow-hidden rounded-lg shadow-sm bg-gray-900 border-2 border-brandRed cursor-pointer h-40 md:h-44 flex flex-col items-center justify-center text-white text-center p-4 hover:bg-brandRed transition-colors duration-300">
+                            <i class="fa-solid fa-images text-2xl mb-2 text-brandRed group-hover:text-white transition-colors"></i>
+                            <h4 class="text-sm font-bold uppercase tracking-wider mb-1">More Images</h4>
+                            <p class="text-[10px] text-gray-400 group-hover:text-white/90">View archived gallery</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CONTACT PAGE -->
+            <section id="page-contact" class="book-page waiting-right justify-center">
+                <div class="max-w-4xl mx-auto w-full">
+                    <div class="mb-6 text-center w-full">
+                        <h2 class="text-3xl md:text-4xl font-bold tracking-tight uppercase mb-1">Get In <span class="text-brandRed">Touch</span></h2>
+                        <p class="text-gray-500 text-xs sm:text-sm">Have a project in mind or want to collaborate?</p>
+                        <div class="w-12 h-1 bg-brandRed mx-auto mt-2 rounded"></div>
+                    </div>
+                    <div class="bg-lightBg p-6 sm:p-8 rounded-2xl border border-gray-100 grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
+                        <div>
+                            <h3 class="text-lg font-bold mb-3 text-gray-800">Contact Info</h3>
+                            <p class="text-gray-600 mb-6 text-xs sm:text-sm">Feel free to reach out via email or phone, or fill out the form.</p>
+                            <div class="space-y-4">
+                                <div class="flex items-center gap-3 text-gray-700">
+                                    <div class="w-9 h-9 rounded bg-brandRed/10 text-brandRed flex items-center justify-center flex-shrink-0">
+                                        <i class="fa-solid fa-envelope text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] text-gray-400 uppercase font-medium">Email</p>
+                                        <p class="text-xs sm:text-sm font-semibold">nikenindah9718@gmail.com </p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3 text-gray-700">
+                                    <div class="w-9 h-9 rounded bg-brandRed/10 text-brandRed flex items-center justify-center flex-shrink-0">
+                                        <i class="fa-solid fa-phone text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] text-gray-400 uppercase font-medium">Phone</p>
+                                        <p class="text-xs sm:text-sm font-semibold">+62 831-1748-4243</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3 text-gray-700">
+                                    <div class="w-9 h-9 rounded bg-brandRed/10 text-brandRed flex items-center justify-center flex-shrink-0">
+                                        <i class="fa-solid fa-location-dot text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] text-gray-400 uppercase font-medium">Location</p>
+                                        <p class="text-xs sm:text-sm font-semibold">Serang, Indonesia</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <form onsubmit="handleContactSubmit(event)" class="space-y-3">
+                                <div>
+                                    <label class="block text-[10px] uppercase font-medium text-gray-600 mb-1">Your Name</label>
+                                    <input type="text" required class="w-full px-3 py-2 border rounded focus:outline-none focus:border-brandRed text-xs sm:text-sm bg-white">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] uppercase font-medium text-gray-600 mb-1">Your Email</label>
+                                    <input type="email" required class="w-full px-3 py-2 border rounded focus:outline-none focus:border-brandRed text-xs sm:text-sm bg-white">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] uppercase font-medium text-gray-600 mb-1">Message</label>
+                                    <textarea rows="2" required class="w-full px-3 py-2 border rounded focus:outline-none focus:border-brandRed text-xs sm:text-sm bg-white"></textarea>
+                                </div>
+                                <button type="submit" class="w-full bg-brandRed hover:bg-brandRedHover text-white py-2.5 rounded font-semibold uppercase text-xs tracking-wider shadow transition">
+                                    Send Message
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+    </main>
+
+    <!-- Custom Message Box Modal -->
+    <div id="custom-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg p-6 max-w-sm w-full text-center shadow-2xl">
+            <div class="w-12 h-12 rounded-full bg-brandRed/10 text-brandRed flex items-center justify-center mx-auto mb-4 text-xl">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <h3 id="modal-title" class="text-lg font-bold mb-2 text-gray-800">Success</h3>
+            <p id="modal-message" class="text-sm text-gray-600 mb-6">Action completed successfully.</p>
+            <button onclick="closeModal()" class="w-full bg-brandRed text-white py-2 rounded font-semibold text-xs uppercase tracking-wider">OK</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="w-full text-center py-4 text-xs text-gray-500 border-t border-gray-200">
+        &copy; 2026 fl0x. All rights reserved.
+    </footer>
+
+    <!-- Interactive Script for 3D Book Turning Animation -->
+    <script>
+        const pagesOrder = ['home', 'about', 'resume', 'skills', 'portfolio', 'contact'];
+        let currentPageIndex = 0;
+
+        function turnToPage(targetId) {
+            const targetIndex = pagesOrder.indexOf(targetId);
+            if (targetIndex === -1 || targetIndex === currentPageIndex) return;
+
+            pagesOrder.forEach((pageName, idx) => {
+                const el = document.getElementById('page-' + pageName);
+                if (!el) return;
+
+                el.classList.remove('active', 'turned-left', 'waiting-right');
+
+                if (idx < targetIndex) {
+                    el.classList.add('turned-left');
+                } else if (idx > targetIndex) {
+                    el.classList.add('waiting-right');
+                } else {
+                    el.classList.add('active');
+                }
+            });
+
+            currentPageIndex = targetIndex;
+
+            // Update navigation highlights
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                if (link.getAttribute('data-target') === targetId) {
+                    link.classList.add('text-brandRed', 'font-semibold');
+                    link.classList.remove('text-gray-600');
+                } else {
+                    link.classList.remove('text-brandRed', 'font-semibold');
+                    link.classList.add('text-gray-600');
+                }
+            });
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Initialize Book Page Order on Load
+        window.addEventListener('DOMContentLoaded', () => {
+            turnToPage('home');
+        });
+
+        // Toggle mobile menu
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Language translation state
+       // const translations = {
+         //   eng: { hello: "HELLO", subtitle: "Freelance Designer", btnContact: "Contact Me", btnPortfolio: "Portfolio", btnCv: "CV" },
+           // ina: { hello: "HALO", subtitle: "Desainer Lepas", btnContact: "Hubungi Saya", btnPortfolio: "Portofolio", btnCv: "CV" }
+        //};
+
+        function setLanguage(lang) {
+            const engBtn = document.getElementById('lang-eng');
+            const inaBtn = document.getElementById('lang-ina');
+            
+            if (lang === 'eng') {
+                engBtn.className = "text-brandRed border-b-2 border-brandRed pb-0.5 transition-colors";
+                inaBtn.className = "text-gray-500 hover:text-brandRed pb-0.5 transition-colors";
+            } else {
+                inaBtn.className = "text-brandRed border-b-2 border-brandRed pb-0.5 transition-colors";
+                engBtn.className = "text-gray-500 hover:text-gray-700 pb-0.5 transition-colors";
+            }
+
+            document.getElementById('txt-hello').innerText = translations[lang].hello;
+            document.getElementById('txt-subtitle').innerText = translations[lang].subtitle;
+            document.getElementById('btn-contact').innerText = translations[lang].btnContact;
+            document.getElementById('btn-portfolio').innerText = translations[lang].btnPortfolio;
+            document.getElementById('btn-cv').innerText = translations[lang].btnCv;
+        }
+
+        function downloadCV() {
+            showModal("CV Download", "Niken_Indah_P.pdf has been downloaded successfully!");
+        }
+
+        function handleContactSubmit(e) {
+            e.preventDefault();
+            showModal("Message Sent", "Thank you! Your message has been sent to Niken successfully.");
+            e.target.reset();
+        }
+
+        function openMoreImagesModal() {
+            showModal("Archived Gallery", "Redirecting to full Behance archive gallery...");
+        }
+
+        function showModal(title, message) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-message').innerText = message;
+            document.getElementById('custom-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('custom-modal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
